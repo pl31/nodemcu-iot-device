@@ -1,3 +1,5 @@
 config.lua
 ESPlorer.Log
+.nodemcutool
+node_modules/
 *~
