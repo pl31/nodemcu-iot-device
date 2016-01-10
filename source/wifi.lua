@@ -20,8 +20,7 @@ local function wifi_event(state, previous_state)
     ntp.start()
   end
 
-  local msg = {}
-  msg.event=(wifi_states[state])
+  local msg={event=(wifi_states[state])}
   try_set(previous_state,msg,"previous_state")
   try_set(wifi.sta.getmac(),msg,"mac")
   try_set(wifi.sta.getip(),msg,"ip")
@@ -29,18 +28,21 @@ local function wifi_event(state, previous_state)
   msgbus.enqueue(config.wifi.sta.topics.events,msg)
 end
 
-for state, desc in pairs(wifi_states) do
-  wifi.sta.eventMonReg(state, 
-    function(previous_state) 
-      wifi_event(state, previous_state) 
-    end)
+local function start()
+  for state, desc in pairs(wifi_states) do
+    wifi.sta.eventMonReg(state, 
+      function(previous_state) 
+        wifi_event(state, previous_state) 
+      end)
+  end
+  wifi.sta.eventMonStart()
+
+  wifi.setmode(config.wifi.mode)
+  if (config.wifi.mode==wifi.STATION or 
+    config.wifi.mode==wifi.STATIONAP) then
+      wifi.sta.config(config.wifi.sta.ssid,config.wifi.sta.pwd)
+      wifi.sta.connect()
+  end
 end
 
-wifi.sta.eventMonStart()
-wifi.setmode(config.wifi.mode)
-
-if (config.wifi.mode==wifi.STATION or 
-  config.wifi.mode==wifi.STATIONAP) then
-    wifi.sta.config(config.wifi.sta.ssid,config.wifi.sta.pwd)
-    wifi.sta.connect()
-end
+start()

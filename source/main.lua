@@ -1,7 +1,6 @@
-dofile("wifi.lua")
+require "utils"
 
-require("system")
-system.start()
+utils.dofile("wifi")
 
-require("am2302")
+require "am2302"
 am2302.start()

@@ -3,7 +3,7 @@ require("msgbus")
 
 system={}
 
-function system.start()
+function system.status()
   local msg={
     heap=node.heap()
   }
