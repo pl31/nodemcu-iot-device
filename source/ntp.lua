@@ -42,6 +42,14 @@ function create_alarm(interval_s)
   tmr.alarm(config.ntp.alarm_id,interval_s*1000,1,sync)
 end
 
-sync()
--- fast poll
-create_alarm(config.ntp.first_sync_interval_s)
+ntp={}
+
+function ntp.start()
+  sync()
+  -- fast poll
+  create_alarm(config.ntp.first_sync_interval_s)
+end
+
+function ntp.stop()
+  tmr.stop(config.ntp.alarm_id)
+end
