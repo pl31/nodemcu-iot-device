@@ -12,7 +12,7 @@ config.wifi={
     topics={
       events="events/wifi/sta"
     },
-    ssid = <WIFI_SSID>,
+    ssid=<WIFI_SSID>,
     pwd=<WIFI_PASSWORD>,
     monitor=true
   }
