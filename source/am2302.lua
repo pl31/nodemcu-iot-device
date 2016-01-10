@@ -2,9 +2,8 @@ require("config")
 require("msgbus")
 
 local function read_sensor_data()
-  local pin = 5
   local status,temp,humi,temp_decimial,humi_decimial=
-    dht.read(pin)
+    dht.read(config.am2302.pin)
   if(status==dht.OK) then
     -- Float firmware using this example
     msg={}
