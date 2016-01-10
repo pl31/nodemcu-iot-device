@@ -1,49 +1,56 @@
-local tmr_now=tmr.now()
-print(tmr_now)
 -- todo: imporove seed?
-math.randomseed(tmr_now)
+math.randomseed(tmr.now())
 
-config = {}
+config={
+  device_id="ESP8266-"..node.chipid(),
+  boot_id=math.random(2^32)
+}
 
-config.device_id = "ESP8266-"..node.chipid()
-config.boot_id = math.random(2^32)
+config.wifi={
+  mode=wifi.STATION,
+  sta={
+    topics={
+      events="events/wifi/sta"
+    },
+    ssid = <WIFI_SSID>,
+    pwd=<WIFI_PASSWORD>,
+    monitor=true
+  }
+}
 
-config.wifi = {}
-config.wifi.mode = wifi.STATION
+config.ntp={
+  topics={
+    events="events/ntp",
+    ts="ts/ntp"
+  },
+  server=<NTP_SERVER e.g:"ptbtime1.ptb.de">,
+  alarm_id=0,
+  first_sync_interval_s=30,
+  sync_interval_s=1800
+}
 
-config.wifi.sta = {}
-config.wifi.sta.topics = {}
-config.wifi.sta.topics.events = "events/wifi/sta"
-config.wifi.sta.ssid = <WIFI_SSID>
-config.wifi.sta.pwd = <WIFI_PASSWORD>
-config.wifi.sta.monitor = true
+config.am2302={
+  topics={
+    events="events/am2302",
+    ts="ts/am2302"
+  },
+  alarm_id=1,
+  read_sensor_interval_s=300,
+  temperature_offset=-0.5
+}
 
-config.ntp = {}
-config.ntp.topics = {}
-config.ntp.topics.events = "events/ntp"
-config.ntp.topics.ts = "ts/ntp"
-config.ntp.server = <NTP_SERVER e.g:"ptbtime1.ptb.de">
-config.ntp.alarm_id = 0
-config.ntp.first_sync_interval_s = 30
-config.ntp.sync_interval_s = 1800
-
-config.am2302 = {}
-config.am2302.topics = {}
-config.am2302.topics.events = "events/am2302"
-config.am2302.topics.ts = "ts/am2302"
-config.am2302.alarm_id = config.ntp.alarm_id + 1
-config.am2302.read_sensor_interval_s = 300
-config.am2302.temperature_offset = -0.5
-
-config.msgbus = {}
-config.msgbus.topics = {}
-config.msgbus.topics.events = "events/msgbus" 
-config.msgbus.topics.ts = "ts/msgbus"
-config.msgbus.mqtt = {}
-config.msgbus.mqtt.alarm_id = config.am2302.alarm_id + 1
-config.msgbus.mqtt.reconnect_interval_s = 60
-config.msgbus.mqtt.send_timeout_s = 60
-config.msgbus.mqtt.host = <MQTT_HOST>
-config.msgbus.mqtt.port = <MQTT_PORT>
-config.msgbus.mqtt.user = <MQTT_USER>
-config.msgbus.mqtt.password = <YOUR_MQTT_PASSWORD>
+config.msgbus={
+  topics={
+    events="events/msgbus",
+    ts="ts/msgbus"
+  },
+  mqtt={
+    alarm_id=2,
+    reconnect_interval_s=60,
+    send_timeout_s=60,
+    host=<MQTT_HOST>,
+    port=<MQTT_PORT>,
+    user=<MQTT_USER e.g:config.device_id>,
+    password=<YOUR_MQTT_PASSWORD>
+  }
+}
