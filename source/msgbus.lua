@@ -14,8 +14,8 @@ local buffer = {}
 local msg_id = 0
 
 function msgbus.enqueue(topic,data,qos,retain)
-  qos = qos or 1
-  retain = retain or 0
+  local qos = qos or 1
+  local retain = retain or 0
   -- additional data
   data.uptime_s=tmr.now()/1000000
   local s,subs=rtctime.get()
@@ -25,12 +25,13 @@ function msgbus.enqueue(topic,data,qos,retain)
   data.boot_id=config.boot_id
   data.id=msg_id
   -- pack in msg
-  msg={}
-  msg.device=config.device_id
-  msg.topic=topic
-  msg.data=data
-  msg.qos=qos
-  msg.retain=retain
+  local msg={
+    device=config.device_id,
+    topic=topic,
+    data=data,
+    qos=qos,
+    retain=retain
+  }
 
   msg_id = msg_id + 1
 
@@ -65,8 +66,7 @@ end
 
 -- enqueue own events
 local function on_mqtt_event(event)
-  local msg={}
-  msg.event=event
+  local msg={event=event}
   msgbus.enqueue(config.msgbus.topics.events,msg)
 end
 
@@ -99,16 +99,15 @@ local function on_offline(conn)
   on_mqtt_event("offline")
 end
 
-mqttc = mqtt.Client(node.chipid(), 600, 
+mqttc=mqtt.Client(node.chipid(), 600, 
   config.msgbus.mqtt.user, config.msgbus.mqtt.password)
 mqttc:on("connect", on_connect)
 mqttc:on("offline", on_offline)
--- mqttc:lwt("/lwt", "offline", 0, 0)
 -- first connect
 mqttc_connect()
 
 local function on_send()
-  msg=table.remove(buffer,1)
+  local msg=table.remove(buffer,1)
   debug("message "..msg.data.id.." removed")
   mqttc_send_lock=nil
   send_all()

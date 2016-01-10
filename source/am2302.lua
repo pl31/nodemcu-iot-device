@@ -5,13 +5,13 @@ local function read_sensor_data()
   local status,temp,humi,temp_decimial,humi_decimial=
     dht.read(config.am2302.pin)
   if(status==dht.OK) then
-    -- Float firmware using this example
-    msg={}
-    msg.temperature=temp+config.am2302.temperature_offset
-    msg.humidity=humi
+    local msg={
+      temperature=temp+config.am2302.temperature_offset,
+      humidity=humi
+    }
     msgbus.enqueue(config.am2302.topics.ts,msg,1,1)
   else
-    msg={}
+    local msg={}
     if(status==dht.ERROR_CHECKSUM) then
       msg.error="checksum error"
     elseif(status==dht.ERROR_TIMEOUT) then
