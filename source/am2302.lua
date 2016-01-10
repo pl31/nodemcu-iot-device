@@ -3,14 +3,14 @@ require("msgbus")
 
 local function read_sensor_data()
   local pin = 5
-  local status,temp,humi,temp_decimial,humi_decimial = 
+  local status,temp,humi,temp_decimial,humi_decimial=
     dht.read(pin)
   if(status==dht.OK) then
     -- Float firmware using this example
     msg={}
-    msg.temperature=temp + config.am2302.temperature_offset
+    msg.temperature=temp+config.am2302.temperature_offset
     msg.humidity=humi
-    msgbus.enqueue(config.am2302.topics.ts, msg)
+    msgbus.enqueue(config.am2302.topics.ts,msg,1,1)
   else
     msg={}
     if(status==dht.ERROR_CHECKSUM) then
@@ -20,7 +20,7 @@ local function read_sensor_data()
     else
       msg.error="unknown"
     end
-    msgbus.enqueue(config.am2302.topics.events, msg)
+    msgbus.enqueue(config.am2302.topics.events,msg)
   end
 end
 
