@@ -23,8 +23,16 @@ local function read_sensor_data()
   end
 end
 
-read_sensor_data()
-tmr.stop(config.am2302.alarm_id)
-tmr.alarm(config.am2302.alarm_id,
-  config.am2302.read_sensor_interval_s * 1000, 
-  1, read_sensor_data)
+am2302={}
+
+function am2302.start()
+  read_sensor_data()
+  tmr.stop(config.am2302.alarm_id)
+  tmr.alarm(config.am2302.alarm_id,
+    config.am2302.read_sensor_interval_s * 1000, 
+    1, read_sensor_data)
+end
+
+function am2302.stop()
+  tmr.stop(config.am2302.alarm_id)
+end
