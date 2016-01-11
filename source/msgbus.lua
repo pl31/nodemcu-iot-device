@@ -17,7 +17,7 @@ function msgbus.enqueue(topic,data,qos,retain)
   local qos = qos or 1
   local retain = retain or 0
   -- additional data
-  data.uptime_s=tmr.now()/1000000
+  data.uptime_s=tmr.time()-config.uptime_offset_s
   local s,subs=rtctime.get()
   if (s~=0) then
     data.utc_s=s+subs/1000000

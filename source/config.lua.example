@@ -3,7 +3,8 @@ math.randomseed(tmr.now())
 
 config={
   device_id="ESP8266-"..node.chipid(),
-  boot_id=math.random(2^32)
+  boot_id=math.random(2^32),
+  uptime_offset_s=tmr.time()
 }
 
 config.wifi={
@@ -27,6 +28,13 @@ config.ntp={
   alarm_id=0,
   first_sync_interval_s=30,
   sync_interval_s=1800
+}
+
+config.system={
+  topics={
+    events="events/system",
+    ts="ts/system"
+  }
 }
 
 config.am2302={
